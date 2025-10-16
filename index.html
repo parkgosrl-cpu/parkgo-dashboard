@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ParkGO - Dashboard IoT</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>ParkGO - Dashboard de Datos</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
       background-color: #f4f6f9;
-      color: #333;
+      color: #222;
       text-align: center;
       margin: 0;
       padding: 20px;
@@ -17,90 +16,86 @@
     h1 {
       color: #0078d7;
       margin-bottom: 10px;
+      font-size: 2.5rem;
     }
     h2 {
       color: #444;
-      margin-bottom: 30px;
+      margin: 30px 0 10px;
+      font-size: 1.8rem;
     }
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 25px;
-      margin-bottom: 40px;
-    }
-    .card {
-      background: white;
+    table {
+      margin: 0 auto 40px auto;
+      border-collapse: collapse;
+      width: 80%;
+      max-width: 900px;
+      background-color: white;
       border-radius: 15px;
+      overflow: hidden;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 220px;
-      transition: 0.3s;
+      font-size: 1.2rem;
     }
-    .card:hover {
-      transform: scale(1.05);
+    th, td {
+      padding: 18px;
+      border-bottom: 1px solid #ddd;
     }
-    .card h3 {
-      color: #0078d7;
-      margin-bottom: 10px;
+    th {
+      background-color: #0078d7;
+      color: white;
+      font-size: 1.3rem;
     }
-    .value {
-      font-size: 2rem;
+    tr:hover {
+      background-color: #f2f2f2;
+    }
+    .valor {
       font-weight: bold;
-      color: #222;
-    }
-    canvas {
-      background: white;
-      border-radius: 10px;
-      padding: 15px;
-      margin: 20px auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      max-width: 600px;
-      width: 100%;
+      font-size: 1.6rem;
+      color: #0078d7;
     }
     footer {
-      margin-top: 30px;
-      font-size: 0.9rem;
+      margin-top: 40px;
+      font-size: 1rem;
       color: #666;
     }
   </style>
 </head>
 <body>
-  <h1>🚗 ParkGO Dashboard</h1>
-  <h2>Monitoreo en Tiempo Real con ThingSpeak</h2>
+  <h1>🚗 ParkGO Dashboard IoT</h1>
+  <h2>Datos en Tiempo Real desde ThingSpeak</h2>
 
-  <!-- ===== TARJETAS DE VALORES ===== -->
-  <div class="cards">
-    <div class="card">
-      <h3>Aperturas de Barrera</h3>
-      <div class="value" id="aperturas">--</div>
-    </div>
-    <div class="card">
-      <h3>Cierres de Barrera</h3>
-      <div class="value" id="cierres">--</div>
-    </div>
-    <div class="card">
-      <h3>Tiempo Total (seg)</h3>
-      <div class="value" id="tiempo">--</div>
-    </div>
-    <div class="card">
-      <h3>Ganancias ($)</h3>
-      <div class="value" id="ganancia">--</div>
-    </div>
-  </div>
+  <!-- ===== TABLA 1 ===== -->
+  <h2>📊 Aperturas de Barrera</h2>
+  <table>
+    <tr><th>Último Valor</th><th>Fecha</th></tr>
+    <tr><td class="valor" id="aperturas">--</td><td id="fecha1">--</td></tr>
+  </table>
 
-  <!-- ===== GRÁFICOS ===== -->
-  <canvas id="chartAperturas" height="100"></canvas>
-  <canvas id="chartCierres" height="100"></canvas>
-  <canvas id="chartTiempo" height="100"></canvas>
-  <canvas id="chartGanancia" height="100"></canvas>
+  <!-- ===== TABLA 2 ===== -->
+  <h2>📉 Cierres de Barrera</h2>
+  <table>
+    <tr><th>Último Valor</th><th>Fecha</th></tr>
+    <tr><td class="valor" id="cierres">--</td><td id="fecha2">--</td></tr>
+  </table>
 
-  <footer>© 2025 ParkGO | Proyecto IoT - ESP32 + ThingSpeak + GitHub Pages</footer>
+  <!-- ===== TABLA 3 ===== -->
+  <h2>⏱ Tiempo Total (segundos)</h2>
+  <table>
+    <tr><th>Último Valor</th><th>Fecha</th></tr>
+    <tr><td class="valor" id="tiempo">--</td><td id="fecha3">--</td></tr>
+  </table>
+
+  <!-- ===== TABLA 4 ===== -->
+  <h2>💰 Ganancia Total ($)</h2>
+  <table>
+    <tr><th>Último Valor</th><th>Fecha</th></tr>
+    <tr><td class="valor" id="ganancia">--</td><td id="fecha4">--</td></tr>
+  </table>
+
+  <footer>© 2025 ParkGO | Proyecto IoT ESP32 + ThingSpeak + GitHub Pages</footer>
 
   <script>
     const channelID = 3111541;
     const readAPIKey = "Y65MRQAJGMM1TSXG";
-    const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=10`;
+    const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=1`;
 
     async function actualizarDatos() {
       try {
@@ -109,65 +104,29 @@
         const feeds = data.feeds;
 
         if (!feeds || feeds.length === 0) return;
-
         const ultimo = feeds[feeds.length - 1];
+        const fecha = new Date(ultimo.created_at).toLocaleString();
+
         document.getElementById("aperturas").textContent = ultimo.field1 || 0;
+        document.getElementById("fecha1").textContent = fecha;
+
         document.getElementById("cierres").textContent = ultimo.field2 || 0;
+        document.getElementById("fecha2").textContent = fecha;
+
         document.getElementById("tiempo").textContent = ultimo.field3 || 0;
+        document.getElementById("fecha3").textContent = fecha;
+
         document.getElementById("ganancia").textContent = "$" + (ultimo.field4 || 0);
-
-        const labels = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
-        const aperturas = feeds.map(f => f.field1);
-        const cierres = feeds.map(f => f.field2);
-        const tiempo = feeds.map(f => f.field3);
-        const ganancia = feeds.map(f => f.field4);
-
-        actualizarGrafico(chartAperturas, labels, aperturas, "Aperturas de Barrera");
-        actualizarGrafico(chartCierres, labels, cierres, "Cierres de Barrera");
-        actualizarGrafico(chartTiempo, labels, tiempo, "Tiempo Total (seg)");
-        actualizarGrafico(chartGanancia, labels, ganancia, "Ganancias ($)");
+        document.getElementById("fecha4").textContent = fecha;
 
       } catch (error) {
         console.error("Error al obtener datos:", error);
       }
     }
 
-    // Crear gráficos
-    function crearGrafico(ctx, label) {
-      return new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [{
-            label: label,
-            data: [],
-            borderColor: "#0078d7",
-            borderWidth: 2,
-            fill: false,
-            tension: 0.2
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    }
-
-    function actualizarGrafico(chart, labels, data, label) {
-      chart.data.labels = labels;
-      chart.data.datasets[0].label = label;
-      chart.data.datasets[0].data = data;
-      chart.update();
-    }
-
-    const chartAperturas = crearGrafico(document.getElementById("chartAperturas").getContext("2d"), "Aperturas de Barrera");
-    const chartCierres = crearGrafico(document.getElementById("chartCierres").getContext("2d"), "Cierres de Barrera");
-    const chartTiempo = crearGrafico(document.getElementById("chartTiempo").getContext("2d"), "Tiempo Total (seg)");
-    const chartGanancia = crearGrafico(document.getElementById("chartGanancia").getContext("2d"), "Ganancias ($)");
-
     actualizarDatos();
-    setInterval(actualizarDatos, 15000);
+    setInterval(actualizarDatos, 15000); // Actualiza cada 15 segundos
   </script>
 </body>
 </html>
+
