@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ParkGO Dashboard</title>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f3f4f6; color: #333; }
+    h1 { color: #007bff; }
+    table { margin: 20px auto; border-collapse: collapse; width: 80%; }
+    td, th { border: 1px solid #ccc; padding: 8px; }
+    th { background: #007bff; color: white; }
+    .update { margin-top: 10px; color: gray; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>🚗 ParkGO Dashboard</h1>
+  <table>
+    <tr><th>Dato</th><th>Valor</th></tr>
+    <tr><td>Lugares Disponibles</td><td id="lugares">Cargando...</td></tr>
+    <tr><td>Tiempo Total (s)</td><td id="tiempo">Cargando...</td></tr>
+  </table>
+  <div class="update" id="updateTime"></div>
+
+  <script>
+    const channelID = "3111541"; // 🔹 Reemplazá con tu número de canal de ThingSpeak
+    const readAPI = "Y65MRQAJGMM1TSXG"; // 🔹 Reemplazá con tu API Key de lectura
+
+    async function obtenerDatos() {
+      try {
+        const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?results=1&api_key=${readAPI}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const feed = data.feeds[0];
+        document.getElementById("lugares").textContent = feed.field1;
+        document.getElementById("tiempo").textContent = feed.field2;
+
+        const fecha = new Date(feed.created_at);
+        document.getElementById("updateTime").textContent = "Última actualización: " + fecha.toLocaleTimeString();
+      } catch (error) {
+        console.error("Error obteniendo datos:", error);
+      }
+    }
+
+    obtenerDatos();
+    setInterval(obtenerDatos, 15000); // 🔄 Actualiza cada 15 segundos
+  </script>
+</body>
+</html>
