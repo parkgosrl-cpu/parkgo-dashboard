@@ -1,50 +1,158 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ParkGO Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParkGO - Monitoreo IoT</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: Arial; text-align: center; background: #f3f4f6; color: #333; }
-    h1 { color: #007bff; }
-    table { margin: 20px auto; border-collapse: collapse; width: 80%; }
-    td, th { border: 1px solid #ccc; padding: 8px; }
-    th { background: #007bff; color: white; }
-    .update { margin-top: 10px; color: gray; font-size: 14px; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #0078d7;
+      margin-bottom: 5px;
+    }
+    h2 {
+      color: #444;
+      margin: 5px 0 20px 0;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0078d7;
+    }
+    canvas {
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 30px;
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #555;
+    }
   </style>
 </head>
 <body>
   <h1>🚗 ParkGO Dashboard</h1>
-  <table>
-    <tr><th>Dato</th><th>Valor</th></tr>
-    <tr><td>Lugares Disponibles</td><td id="lugares">Cargando...</td></tr>
-    <tr><td>Tiempo Total (s)</td><td id="tiempo">Cargando...</td></tr>
-  </table>
-  <div class="update" id="updateTime"></div>
+  <h2>Monitoreo en Tiempo Real con ThingSpeak</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Aperturas de Barrera</h3>
+      <div class="value" id="aperturas">--</div>
+    </div>
+    <div class="card">
+      <h3>Cierres de Barrera</h3>
+      <div class="value" id="cierres">--</div>
+    </div>
+    <div class="card">
+      <h3>Tiempo Total (seg)</h3>
+      <div class="value" id="tiempo">--</div>
+    </div>
+    <div class="card">
+      <h3>Ganancias ($)</h3>
+      <div class="value" id="ganancia">--</div>
+    </div>
+  </div>
+
+  <canvas id="chartAperturas" height="100"></canvas>
+  <canvas id="chartTiempo" height="100"></canvas>
+
+  <footer>
+    © 2025 ParkGO | Proyecto IoT - ESP32 + ThingSpeak + GitHub Pages
+  </footer>
 
   <script>
-    const channelID = "3111541"; // 🔹 Reemplazá con tu número de canal de ThingSpeak
-    const readAPI = "Y65MRQAJGMM1TSXG"; // 🔹 Reemplazá con tu API Key de lectura
+    const channelID = 3111541;
+    const readAPIKey = "Y65MRQAJGMM1TSXG";
+    const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=10`;
 
-    async function obtenerDatos() {
+    async function actualizarDatos() {
       try {
-        const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?results=1&api_key=${readAPI}`;
         const response = await fetch(url);
         const data = await response.json();
+        const feeds = data.feeds;
 
-        const feed = data.feeds[0];
-        document.getElementById("lugares").textContent = feed.field1;
-        document.getElementById("tiempo").textContent = feed.field2;
+        if (!feeds || feeds.length === 0) return;
 
-        const fecha = new Date(feed.created_at);
-        document.getElementById("updateTime").textContent = "Última actualización: " + fecha.toLocaleTimeString();
+        // Último registro
+        const ultimo = feeds[feeds.length - 1];
+        document.getElementById("aperturas").textContent = ultimo.field1 || 0;
+        document.getElementById("cierres").textContent = ultimo.field2 || 0;
+        document.getElementById("tiempo").textContent = ultimo.field3 || 0;
+        document.getElementById("ganancia").textContent = "$" + (ultimo.field4 || 0);
+
+        // --- Gráfico 1: Aperturas de barrera ---
+        const labels = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
+        const aperturas = feeds.map(f => f.field1);
+        const tiempo = feeds.map(f => f.field3);
+
+        actualizarGrafico(chartAperturas, labels, aperturas, "Aperturas de Barrera");
+        actualizarGrafico(chartTiempo, labels, tiempo, "Tiempo Total (segundos)");
+
       } catch (error) {
-        console.error("Error obteniendo datos:", error);
+        console.error("Error al obtener datos:", error);
       }
     }
 
-    obtenerDatos();
-    setInterval(obtenerDatos, 15000); // 🔄 Actualiza cada 15 segundos
+    // --- Crear gráficos ---
+    const ctx1 = document.getElementById("chartAperturas").getContext("2d");
+    const ctx2 = document.getElementById("chartTiempo").getContext("2d");
+
+    let chartAperturas = crearGrafico(ctx1, "Aperturas de Barrera", []);
+    let chartTiempo = crearGrafico(ctx2, "Tiempo Total (seg)", []);
+
+    function crearGrafico(ctx, label, data) {
+      return new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+            label: label,
+            data: data,
+            borderColor: "#0078d7",
+            borderWidth: 2,
+            fill: false,
+            tension: 0.2
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    function actualizarGrafico(chart, labels, data, label) {
+      chart.data.labels = labels;
+      chart.data.datasets[0].label = label;
+      chart.data.datasets[0].data = data;
+      chart.update();
+    }
+
+    // Actualizar cada 15 segundos
+    actualizarDatos();
+    setInterval(actualizarDatos, 15000);
   </script>
 </body>
 </html>
