@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ParkGO - Dashboard Completo</title>
+  <title>ParkGO - Dashboard Completo (Barras)</title>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -20,25 +20,20 @@
       margin:0;
       padding:24px;
       background:var(--bg);
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      font-family:"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--text);
       text-align:center;
-    }
-
-    header{
-      margin-bottom:18px;
     }
     h1{
       margin:0;
       color:var(--accent);
-      font-size:2.2rem;
+      font-size:2.3rem;
     }
     p.subtitle{
-      margin:6px 0 18px;
+      margin:8px 0 22px;
       color:#444;
     }
 
-    /* tablas grandes */
     .tables{
       display:flex;
       flex-direction:column;
@@ -46,7 +41,7 @@
       align-items:center;
       width:100%;
       max-width:1100px;
-      margin:0 auto 24px;
+      margin:0 auto 28px;
     }
     .big-table{
       width:100%;
@@ -58,67 +53,57 @@
     .big-table table{
       width:100%;
       border-collapse:collapse;
-      font-size:1.05rem;
+      font-size:1.1rem;
     }
     .big-table thead th{
       text-align:left;
       padding:18px 22px;
       background:var(--accent);
       color:#fff;
-      font-size:1.15rem;
+      font-size:1.2rem;
     }
     .big-table tbody td{
-      padding:22px;
+      padding:20px;
       border-top:1px solid #eee;
     }
     .valor{
       font-weight:700;
       color:var(--accent);
-      font-size:1.6rem;
+      font-size:1.7rem;
     }
     .fecha{
       color:#555;
       font-size:0.95rem;
     }
 
-    /* contenedor de graficas */
     .charts{
       width:100%;
       max-width:1200px;
-      margin: 10px auto 40px;
+      margin:0 auto 40px;
       display:grid;
-      grid-template-columns: 1fr;
-      gap:20px;
-      align-items:start;
+      grid-template-columns:1fr;
+      gap:24px;
     }
-
-    /* en pantallas grandes mostramos 2 columnas */
     @media(min-width:900px){
-      .charts{ grid-template-columns: 1fr 1fr; }
-      .tables{ gap:22px; }
+      .charts{grid-template-columns:1fr 1fr;}
     }
-
     .chart-card{
       background:var(--card);
       border-radius:12px;
       box-shadow:0 6px 18px rgba(0,0,0,0.07);
       padding:18px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
     }
     .chart-title{
-      width:100%;
       text-align:left;
       color:var(--accent);
       font-weight:700;
       margin-bottom:8px;
+      font-size:1.1rem;
     }
     canvas{
-      width:100% !important;
-      height:360px !important; /* grande y visible */
+      width:100%!important;
+      height:360px!important;
     }
-
     footer{
       margin-top:28px;
       color:#666;
@@ -127,194 +112,125 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>🚗 ParkGO - Dashboard Completo</h1>
-    <p class="subtitle">Tablas en grande + 4 gráficas actualizadas cada 15 segundos (ThingSpeak channel: 3111541)</p>
-  </header>
+  <h1>🚗 ParkGO - Dashboard Completo</h1>
+  <p class="subtitle">Visualización de datos en barras desde ThingSpeak (Canal 3111541)</p>
 
-  <!-- TABLAS GRANDES -->
+  <!-- TABLAS -->
   <section class="tables">
-    <div class="big-table" id="table-aperturas">
-      <table>
-        <thead>
-          <tr><th>Aperturas de Barrera</th><th>Última fecha</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="valor" id="aperturas">--</td>
-            <td class="fecha" id="fecha1">--</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="big-table" id="table-cierres">
-      <table>
-        <thead>
-          <tr><th>Cierres de Barrera</th><th>Última fecha</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="valor" id="cierres">--</td>
-            <td class="fecha" id="fecha2">--</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="big-table" id="table-tiempo">
-      <table>
-        <thead>
-          <tr><th>Tiempo Total (segundos)</th><th>Última fecha</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="valor" id="tiempo">--</td>
-            <td class="fecha" id="fecha3">--</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="big-table" id="table-ganancia">
-      <table>
-        <thead>
-          <tr><th>Ganancia Total ($)</th><th>Última fecha</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="valor" id="ganancia">--</td>
-            <td class="fecha" id="fecha4">--</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="big-table"><table>
+      <thead><tr><th>Aperturas de Barrera</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="aperturas">--</td><td class="fecha" id="fecha1">--</td></tr></tbody>
+    </table></div>
+    <div class="big-table"><table>
+      <thead><tr><th>Cierres de Barrera</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="cierres">--</td><td class="fecha" id="fecha2">--</td></tr></tbody>
+    </table></div>
+    <div class="big-table"><table>
+      <thead><tr><th>Tiempo Total (segundos)</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="tiempo">--</td><td class="fecha" id="fecha3">--</td></tr></tbody>
+    </table></div>
+    <div class="big-table"><table>
+      <thead><tr><th>Ganancia Total ($)</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="ganancia">--</td><td class="fecha" id="fecha4">--</td></tr></tbody>
+    </table></div>
   </section>
 
-  <!-- GRAFICAS GRANDES -->
+  <!-- GRAFICAS DE BARRAS -->
   <section class="charts">
     <div class="chart-card">
-      <div class="chart-title">Aperturas de Barrera (histórico)</div>
-      <canvas id="chartAperturas"></canvas>
+      <div class="chart-title">Aperturas de Barrera</div>
+      <canvas id="chartA"></canvas>
     </div>
-
     <div class="chart-card">
-      <div class="chart-title">Cierres de Barrera (histórico)</div>
-      <canvas id="chartCierres"></canvas>
+      <div class="chart-title">Cierres de Barrera</div>
+      <canvas id="chartB"></canvas>
     </div>
-
     <div class="chart-card">
-      <div class="chart-title">Tiempo Total (seg) (histórico)</div>
-      <canvas id="chartTiempo"></canvas>
+      <div class="chart-title">Tiempo Total (s)</div>
+      <canvas id="chartC"></canvas>
     </div>
-
     <div class="chart-card">
-      <div class="chart-title">Ganancia Total $ (histórico)</div>
-      <canvas id="chartGanancia"></canvas>
+      <div class="chart-title">Ganancia Total ($)</div>
+      <canvas id="chartD"></canvas>
     </div>
   </section>
 
-  <footer>© 2025 ParkGO • Datos desde ThingSpeak (canal 3111541)</footer>
+  <footer>© 2025 ParkGO • Datos obtenidos de ThingSpeak (canal 3111541)</footer>
 
   <script>
-    // CONFIG: tu canal y read API key
     const channelID = 3111541;
     const readAPIKey = "Y65MRQAJGMM1TSXG";
-
-    // Cuántos puntos traemos para los históricos
-    const RESULTS = 30; // últimos 30 registros
-
-    // URLs
+    const RESULTS = 30;
     const baseUrl = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=${RESULTS}`;
 
-    // Gráficos Chart.js
-    function makeChart(ctx, label, color){
+    // Crear gráfico de barras
+    function makeBarChart(ctx, label, color){
       return new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: [],
-          datasets: [{
-            label: label,
-            data: [],
-            borderColor: color,
-            backgroundColor: color,
-            fill: false,
-            tension: 0.25,
-            pointRadius: 3,
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { display: true },
-            y: { beginAtZero: true, grid: {color:'#eee'} }
+        type:'bar',
+        data:{labels:[],datasets:[{
+          label:label,
+          data:[],
+          backgroundColor:color,
+          borderRadius:6
+        }]},
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          scales:{
+            x:{grid:{display:false}},
+            y:{beginAtZero:true}
           },
-          plugins: {
-            legend: { display: false }
+          plugins:{
+            legend:{display:false}
           }
         }
       });
     }
 
-    const chartA = makeChart(document.getElementById('chartAperturas').getContext('2d'), 'Aperturas', '#0078d7');
-    const chartB = makeChart(document.getElementById('chartCierres').getContext('2d'), 'Cierres', '#d9534f');
-    const chartC = makeChart(document.getElementById('chartTiempo').getContext('2d'), 'Tiempo (s)', '#28a745');
-    const chartD = makeChart(document.getElementById('chartGanancia').getContext('2d'), 'Ganancia ($)', '#ff9f00');
+    const chartA = makeBarChart(document.getElementById('chartA').getContext('2d'),'Aperturas','#0078d7');
+    const chartB = makeBarChart(document.getElementById('chartB').getContext('2d'),'Cierres','#d9534f');
+    const chartC = makeBarChart(document.getElementById('chartC').getContext('2d'),'Tiempo','#28a745');
+    const chartD = makeBarChart(document.getElementById('chartD').getContext('2d'),'Ganancia','#ff9f00');
 
-    // Función para actualizar UI
-    async function actualizarTodo(){
-      try {
-        const resp = await fetch(baseUrl);
-        if(!resp.ok) throw new Error('No se pudo obtener datos: ' + resp.status);
-        const json = await resp.json();
-        const feeds = json.feeds;
-        if(!feeds || feeds.length === 0) return;
-
-        // Último registro
-        const ultimo = feeds[feeds.length - 1];
-        const fechaTexto = new Date(ultimo.created_at).toLocaleString();
+    async function actualizar(){
+      try{
+        const res = await fetch(baseUrl);
+        const data = await res.json();
+        const feeds = data.feeds;
+        if(!feeds || feeds.length===0) return;
+        const ultimo = feeds[feeds.length-1];
+        const fecha = new Date(ultimo.created_at).toLocaleString();
 
         document.getElementById('aperturas').textContent = ultimo.field1 || 0;
-        document.getElementById('fecha1').textContent = fechaTexto;
-
+        document.getElementById('fecha1').textContent = fecha;
         document.getElementById('cierres').textContent = ultimo.field2 || 0;
-        document.getElementById('fecha2').textContent = fechaTexto;
-
+        document.getElementById('fecha2').textContent = fecha;
         document.getElementById('tiempo').textContent = ultimo.field3 || 0;
-        document.getElementById('fecha3').textContent = fechaTexto;
-
+        document.getElementById('fecha3').textContent = fecha;
         document.getElementById('ganancia').textContent = '$' + (ultimo.field4 || 0);
-        document.getElementById('fecha4').textContent = fechaTexto;
+        document.getElementById('fecha4').textContent = fecha;
 
-        // preparar arrays para gráficas (orden cronológico)
-        const labels = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
-        const arrA = feeds.map(f => (f.field1 !== null ? Number(f.field1) : null));
-        const arrB = feeds.map(f => (f.field2 !== null ? Number(f.field2) : null));
-        const arrC = feeds.map(f => (f.field3 !== null ? Number(f.field3) : null));
-        const arrD = feeds.map(f => (f.field4 !== null ? Number(f.field4) : null));
+        const labels = feeds.map(f=>new Date(f.created_at).toLocaleTimeString());
+        const arrA = feeds.map(f=>Number(f.field1));
+        const arrB = feeds.map(f=>Number(f.field2));
+        const arrC = feeds.map(f=>Number(f.field3));
+        const arrD = feeds.map(f=>Number(f.field4));
 
-        // actualizar charts (filtrando nulls para no romper escalas)
-        updateChart(chartA, labels, arrA);
-        updateChart(chartB, labels, arrB);
-        updateChart(chartC, labels, arrC);
-        updateChart(chartD, labels, arrD);
-
-      } catch (err) {
-        console.error('Error actualizando datos:', err);
-      }
+        updateBar(chartA,labels,arrA);
+        updateBar(chartB,labels,arrB);
+        updateBar(chartC,labels,arrC);
+        updateBar(chartD,labels,arrD);
+      }catch(e){console.error(e);}
     }
 
-    function updateChart(chart, labels, values){
+    function updateBar(chart,labels,data){
       chart.data.labels = labels;
-      chart.data.datasets[0].data = values;
+      chart.data.datasets[0].data = data;
       chart.update();
     }
 
-    // Ejecutar la primera vez y repetir cada 15s
-    actualizarTodo();
-    setInterval(actualizarTodo, 15000);
+    actualizar();
+    setInterval(actualizar,15000);
   </script>
 </body>
 </html>
