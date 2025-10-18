@@ -8,6 +8,9 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <!-- Iconos de redes -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
   <style>
     :root{
       --accent:#0078d7;
@@ -18,20 +21,40 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      padding:24px;
+      padding:0;
       background:var(--bg);
       font-family:"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--text);
       text-align:center;
     }
-    h1{
-      margin:0;
-      color:var(--accent);
-      font-size:2.3rem;
+
+    /* 🔹 ENCABEZADO */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      background:var(--accent);
+      color:#fff;
+      padding:12px 16px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.15);
     }
+    header img{
+      height:60px;
+      width:auto;
+      border-radius:10px;
+      box-shadow:0 0 10px rgba(255,255,255,0.3);
+    }
+    header h1{
+      margin:0;
+      font-size:2rem;
+      font-weight:700;
+    }
+
     p.subtitle{
-      margin:8px 0 22px;
+      margin:12px 0 24px;
       color:#444;
+      font-size:1.1rem;
     }
 
     .tables{
@@ -42,6 +65,7 @@
       width:100%;
       max-width:1100px;
       margin:0 auto 28px;
+      padding:0 14px;
     }
     .big-table{
       width:100%;
@@ -76,6 +100,7 @@
       font-size:0.95rem;
     }
 
+    /* 🔹 GRAFICAS */
     .charts{
       width:100%;
       max-width:1200px;
@@ -83,6 +108,7 @@
       display:grid;
       grid-template-columns:1fr;
       gap:24px;
+      padding:0 14px;
     }
     @media(min-width:900px){
       .charts{grid-template-columns:1fr 1fr;}
@@ -104,18 +130,48 @@
       width:100%!important;
       height:360px!important;
     }
+
+    /* 🔹 FOOTER */
     footer{
-      margin-top:28px;
-      color:#666;
+      background:var(--accent);
+      color:#fff;
+      padding:16px 0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .social{
+      display:flex;
+      gap:20px;
+    }
+    .social a{
+      color:#fff;
+      font-size:1.8rem;
+      transition:transform 0.2s ease, color 0.2s ease;
+    }
+    .social a:hover{
+      transform:scale(1.2);
+      color:#ffd700;
+    }
+    footer p{
+      margin:0;
       font-size:0.95rem;
     }
   </style>
 </head>
-<body>
-  <h1>🚗 ParkGO - Dashboard Completo</h1>
-  <p class="subtitle">Visualización de datos en barras desde ThingSpeak (Canal 3111541)</p>
 
-  <!-- TABLAS -->
+<body>
+  <!-- 🔹 ENCABEZADO -->
+  <header>
+    <img src="https://i.imgur.com/XFHr6Ce.png" alt="Logo ParkGO" />
+    <h1>ParkGO</h1>
+  </header>
+
+  <p class="subtitle">Visualización en tiempo real desde ThingSpeak (Canal 3111541)</p>
+
+  <!-- 🔹 TABLAS -->
   <section class="tables">
     <div class="big-table"><table>
       <thead><tr><th>Aperturas de Barrera</th><th>Última fecha</th></tr></thead>
@@ -135,27 +191,22 @@
     </table></div>
   </section>
 
-  <!-- GRAFICAS DE BARRAS -->
+  <!-- 🔹 GRAFICAS -->
   <section class="charts">
-    <div class="chart-card">
-      <div class="chart-title">Aperturas de Barrera</div>
-      <canvas id="chartA"></canvas>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Cierres de Barrera</div>
-      <canvas id="chartB"></canvas>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Tiempo Total (s)</div>
-      <canvas id="chartC"></canvas>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Ganancia Total ($)</div>
-      <canvas id="chartD"></canvas>
-    </div>
+    <div class="chart-card"><div class="chart-title">Aperturas de Barrera</div><canvas id="chartA"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Cierres de Barrera</div><canvas id="chartB"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Tiempo Total (s)</div><canvas id="chartC"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Ganancia Total ($)</div><canvas id="chartD"></canvas></div>
   </section>
 
-  <footer>© 2025 ParkGO • Datos obtenidos de ThingSpeak (canal 3111541)</footer>
+  <!-- 🔹 FOOTER -->
+  <footer>
+    <div class="social">
+      <a href="https://www.instagram.com/tu_usuario" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.tiktok.com/@tu_usuario" target="_blank"><i class="fab fa-tiktok"></i></a>
+    </div>
+    <p>© 2025 ParkGO • Datos obtenidos de ThingSpeak (Canal 3111541)</p>
+  </footer>
 
   <script>
     const channelID = 3111541;
@@ -163,69 +214,52 @@
     const RESULTS = 30;
     const baseUrl = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=${RESULTS}`;
 
-    // Crear gráfico de barras
     function makeBarChart(ctx, label, color){
-      return new Chart(ctx, {
+      return new Chart(ctx,{
         type:'bar',
-        data:{labels:[],datasets:[{
-          label:label,
-          data:[],
-          backgroundColor:color,
-          borderRadius:6
-        }]},
+        data:{labels:[],datasets:[{label:label,data:[],backgroundColor:color,borderRadius:6}]},
         options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          scales:{
-            x:{grid:{display:false}},
-            y:{beginAtZero:true}
-          },
-          plugins:{
-            legend:{display:false}
-          }
+          responsive:true,maintainAspectRatio:false,
+          scales:{x:{grid:{display:false}},y:{beginAtZero:true}},
+          plugins:{legend:{display:false}}
         }
       });
     }
 
-    const chartA = makeBarChart(document.getElementById('chartA').getContext('2d'),'Aperturas','#0078d7');
-    const chartB = makeBarChart(document.getElementById('chartB').getContext('2d'),'Cierres','#d9534f');
-    const chartC = makeBarChart(document.getElementById('chartC').getContext('2d'),'Tiempo','#28a745');
-    const chartD = makeBarChart(document.getElementById('chartD').getContext('2d'),'Ganancia','#ff9f00');
+    const chartA=makeBarChart(document.getElementById('chartA').getContext('2d'),'Aperturas','#0078d7');
+    const chartB=makeBarChart(document.getElementById('chartB').getContext('2d'),'Cierres','#d9534f');
+    const chartC=makeBarChart(document.getElementById('chartC').getContext('2d'),'Tiempo','#28a745');
+    const chartD=makeBarChart(document.getElementById('chartD').getContext('2d'),'Ganancia','#ff9f00');
 
     async function actualizar(){
       try{
-        const res = await fetch(baseUrl);
-        const data = await res.json();
-        const feeds = data.feeds;
-        if(!feeds || feeds.length===0) return;
-        const ultimo = feeds[feeds.length-1];
-        const fecha = new Date(ultimo.created_at).toLocaleString();
+        const res=await fetch(baseUrl);
+        const data=await res.json();
+        const feeds=data.feeds;
+        if(!feeds||feeds.length===0)return;
+        const ultimo=feeds[feeds.length-1];
+        const fecha=new Date(ultimo.created_at).toLocaleString();
 
-        document.getElementById('aperturas').textContent = ultimo.field1 || 0;
-        document.getElementById('fecha1').textContent = fecha;
-        document.getElementById('cierres').textContent = ultimo.field2 || 0;
-        document.getElementById('fecha2').textContent = fecha;
-        document.getElementById('tiempo').textContent = ultimo.field3 || 0;
-        document.getElementById('fecha3').textContent = fecha;
-        document.getElementById('ganancia').textContent = '$' + (ultimo.field4 || 0);
-        document.getElementById('fecha4').textContent = fecha;
+        document.getElementById('aperturas').textContent=ultimo.field1||0;
+        document.getElementById('fecha1').textContent=fecha;
+        document.getElementById('cierres').textContent=ultimo.field2||0;
+        document.getElementById('fecha2').textContent=fecha;
+        document.getElementById('tiempo').textContent=ultimo.field3||0;
+        document.getElementById('fecha3').textContent=fecha;
+        document.getElementById('ganancia').textContent='$'+(ultimo.field4||0);
+        document.getElementById('fecha4').textContent=fecha;
 
-        const labels = feeds.map(f=>new Date(f.created_at).toLocaleTimeString());
-        const arrA = feeds.map(f=>Number(f.field1));
-        const arrB = feeds.map(f=>Number(f.field2));
-        const arrC = feeds.map(f=>Number(f.field3));
-        const arrD = feeds.map(f=>Number(f.field4));
-
-        updateBar(chartA,labels,arrA);
-        updateBar(chartB,labels,arrB);
-        updateBar(chartC,labels,arrC);
-        updateBar(chartD,labels,arrD);
+        const labels=feeds.map(f=>new Date(f.created_at).toLocaleTimeString());
+        update(chartA,labels,feeds.map(f=>Number(f.field1)));
+        update(chartB,labels,feeds.map(f=>Number(f.field2)));
+        update(chartC,labels,feeds.map(f=>Number(f.field3)));
+        update(chartD,labels,feeds.map(f=>Number(f.field4)));
       }catch(e){console.error(e);}
     }
 
-    function updateBar(chart,labels,data){
-      chart.data.labels = labels;
-      chart.data.datasets[0].data = data;
+    function update(chart,labels,data){
+      chart.data.labels=labels;
+      chart.data.datasets[0].data=data;
       chart.update();
     }
 
