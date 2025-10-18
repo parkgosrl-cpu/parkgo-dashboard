@@ -3,161 +3,181 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ParkGO - Dashboard Completo (Barras)</title>
+  <title>ParkGO - Dashboard con Animaciones</title>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Iconos de redes -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <!-- Font Awesome 6 (íconos visibles) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root{
-      --accent:#0078d7;
-      --bg:#f4f6f9;
-      --card:#ffffff;
-      --text:#222;
+    :root {
+      --accent: #0078d7;
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #222;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      padding:0;
-      background:var(--bg);
-      font-family:"Segoe UI",Roboto,Arial,sans-serif;
-      color:var(--text);
-      text-align:center;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      text-align: center;
+      overflow-x: hidden;
     }
+
+    /* 🔹 Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .fade { animation: fadeIn 1s ease forwards; }
+    .zoom { animation: zoomIn 1.2s ease forwards; }
 
     /* 🔹 ENCABEZADO */
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:14px;
-      background:var(--accent);
-      color:#fff;
-      padding:12px 16px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
-    header img{
-      height:60px;
-      width:auto;
-      border-radius:10px;
-      box-shadow:0 0 10px rgba(255,255,255,0.3);
+    header img {
+      height: 60px;
+      width: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
-    header h1{
-      margin:0;
-      font-size:2rem;
-      font-weight:700;
-    }
-
-    p.subtitle{
-      margin:12px 0 24px;
-      color:#444;
-      font-size:1.1rem;
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
     }
 
-    .tables{
-      display:flex;
-      flex-direction:column;
-      gap:18px;
-      align-items:center;
-      width:100%;
-      max-width:1100px;
-      margin:0 auto 28px;
-      padding:0 14px;
-    }
-    .big-table{
-      width:100%;
-      background:var(--card);
-      border-radius:14px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.08);
-      overflow:hidden;
-    }
-    .big-table table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:1.1rem;
-    }
-    .big-table thead th{
-      text-align:left;
-      padding:18px 22px;
-      background:var(--accent);
-      color:#fff;
-      font-size:1.2rem;
-    }
-    .big-table tbody td{
-      padding:20px;
-      border-top:1px solid #eee;
-    }
-    .valor{
-      font-weight:700;
-      color:var(--accent);
-      font-size:1.7rem;
-    }
-    .fecha{
-      color:#555;
-      font-size:0.95rem;
+    p.subtitle {
+      margin: 12px 0 24px;
+      color: #444;
+      font-size: 1.1rem;
     }
 
-    /* 🔹 GRAFICAS */
-    .charts{
-      width:100%;
-      max-width:1200px;
-      margin:0 auto 40px;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:24px;
-      padding:0 14px;
+    /* 🔹 TABLAS */
+    .tables {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto 28px;
+      padding: 0 14px;
     }
-    @media(min-width:900px){
-      .charts{grid-template-columns:1fr 1fr;}
+    .big-table {
+      width: 100%;
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      opacity: 0;
     }
-    .chart-card{
-      background:var(--card);
-      border-radius:12px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.07);
-      padding:18px;
+    .big-table.show { opacity: 1; animation: fadeIn 1s ease forwards; }
+
+    .big-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.1rem;
     }
-    .chart-title{
-      text-align:left;
-      color:var(--accent);
-      font-weight:700;
-      margin-bottom:8px;
-      font-size:1.1rem;
+    .big-table thead th {
+      text-align: left;
+      padding: 18px 22px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.2rem;
     }
-    canvas{
-      width:100%!important;
-      height:360px!important;
+    .big-table tbody td {
+      padding: 20px;
+      border-top: 1px solid #eee;
+    }
+    .valor {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.7rem;
+    }
+    .fecha {
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    /* 🔹 GRÁFICAS */
+    .charts {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 0 14px;
+    }
+    @media (min-width: 900px) {
+      .charts { grid-template-columns: 1fr 1fr; }
+    }
+    .chart-card {
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+      padding: 18px;
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    .chart-card.show { opacity: 1; animation: zoomIn 1s ease forwards; }
+
+    .chart-title {
+      text-align: left;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+    canvas {
+      width: 100% !important;
+      height: 360px !important;
     }
 
     /* 🔹 FOOTER */
-    footer{
-      background:var(--accent);
-      color:#fff;
-      padding:16px 0;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
+    footer {
+      background: var(--accent);
+      color: #fff;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-    .social{
-      display:flex;
-      gap:20px;
+    .social {
+      display: flex;
+      gap: 20px;
     }
-    .social a{
-      color:#fff;
-      font-size:1.8rem;
-      transition:transform 0.2s ease, color 0.2s ease;
+    .social a {
+      color: #fff;
+      font-size: 1.8rem;
+      transition: transform 0.2s ease, color 0.2s ease;
     }
-    .social a:hover{
-      transform:scale(1.2);
-      color:#ffd700;
+    .social a:hover {
+      transform: scale(1.2);
+      color: #ffd700;
     }
-    footer p{
-      margin:0;
-      font-size:0.95rem;
+    footer p {
+      margin: 0;
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -165,14 +185,14 @@
 <body>
   <!-- 🔹 ENCABEZADO -->
   <header>
-    <img src="https://i.imgur.com/XFHr6Ce.png" alt="Logo ParkGO" />
+    <img src="LOGO-ITEC-PARA-WEB_1.png" alt="Logo ParkGO" />
     <h1>ParkGO</h1>
   </header>
 
-  <p class="subtitle">Visualización en tiempo real desde ThingSpeak (Canal 3111541)</p>
+  <p class="subtitle">Visualización en tiempo real </p>
 
   <!-- 🔹 TABLAS -->
-  <section class="tables">
+  <section class="tables fade">
     <div class="big-table"><table>
       <thead><tr><th>Aperturas de Barrera</th><th>Última fecha</th></tr></thead>
       <tbody><tr><td class="valor" id="aperturas">--</td><td class="fecha" id="fecha1">--</td></tr></tbody>
@@ -191,7 +211,7 @@
     </table></div>
   </section>
 
-  <!-- 🔹 GRAFICAS -->
+  <!-- 🔹 GRÁFICAS -->
   <section class="charts">
     <div class="chart-card"><div class="chart-title">Aperturas de Barrera</div><canvas id="chartA"></canvas></div>
     <div class="chart-card"><div class="chart-title">Cierres de Barrera</div><canvas id="chartB"></canvas></div>
@@ -200,12 +220,12 @@
   </section>
 
   <!-- 🔹 FOOTER -->
-  <footer>
+  <footer class="fade">
     <div class="social">
-      <a href="https://www.instagram.com/tu_usuario" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://www.tiktok.com/@tu_usuario" target="_blank"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.instagram.com/@parkgo.srl" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.tiktok.com/@parkgo" target="_blank"><i class="fab fa-tiktok"></i></a>
     </div>
-    <p>© 2025 ParkGO • Datos obtenidos de ThingSpeak (Canal 3111541)</p>
+    <p>© 2025 ParkGO • Garcia,Martin. Guberti,Lorenzo. Lamberto,Aldo. Landaburu,Lisandro</p>
   </footer>
 
   <script>
@@ -254,6 +274,8 @@
         update(chartB,labels,feeds.map(f=>Number(f.field2)));
         update(chartC,labels,feeds.map(f=>Number(f.field3)));
         update(chartD,labels,feeds.map(f=>Number(f.field4)));
+
+        document.querySelectorAll('.big-table, .chart-card').forEach(el=>el.classList.add('show'));
       }catch(e){console.error(e);}
     }
 
