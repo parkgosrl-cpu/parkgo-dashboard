@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ParkGO - Dashboard con Animaciones</title>
 
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Font Awesome 6 (íconos visibles) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -24,20 +21,13 @@
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       color: var(--text);
       text-align: center;
-      overflow-x: hidden;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes zoomIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .fade { animation: fadeIn 1s ease forwards; }
-    .zoom { animation: zoomIn 1.2s ease forwards; }
+    /* ANIMACIONES */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .fade { animation: fadeIn 1s ease forwards; opacity: 0; }
+    .zoom { animation: zoomIn 1.2s ease forwards; opacity: 0; }
 
     /* ENCABEZADO */
     header {
@@ -50,27 +40,13 @@
       padding: 12px 16px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
-    header img {
-      height: 60px;
-      width: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-      font-weight: 700;
-    }
+    header img { height: 60px; width: auto; }
 
-    p.subtitle {
-      margin: 12px 0 24px;
-      color: #444;
-      font-size: 1.1rem;
-    }
+    .subtitle { margin: 12px 0 24px; color: #444; font-size: 1.1rem; }
 
-    /* ✅ BOTÓN PARA IR A OTRA PÁGINA */
+    /* ✅ BOTÓN */
     .switch-btn {
-      margin: 20px auto 30px;
+      margin: 20px auto;
       background: var(--accent);
       color: #fff;
       padding: 12px 25px;
@@ -87,6 +63,7 @@
       background: #005bb5;
     }
 
+    /* TABLAS */
     .tables {
       display: flex;
       flex-direction: column;
@@ -97,7 +74,6 @@
       margin: 0 auto 28px;
       padding: 0 14px;
     }
-
     .big-table {
       width: 100%;
       background: var(--card);
@@ -108,32 +84,21 @@
     }
     .big-table.show { opacity: 1; animation: fadeIn 1s ease forwards; }
 
-    .big-table table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 1.1rem;
-    }
+    .big-table table { width: 100%; border-collapse: collapse; }
     .big-table thead th {
-      text-align: left;
       padding: 18px 22px;
       background: var(--accent);
       color: #fff;
       font-size: 1.2rem;
+      text-align: left;
     }
     .big-table tbody td {
       padding: 20px;
       border-top: 1px solid #eee;
     }
-    .valor {
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 1.7rem;
-    }
-    .fecha {
-      color: #555;
-      font-size: 0.95rem;
-    }
+    .valor { font-weight: 700; color: var(--accent); font-size: 1.7rem; }
 
+    /* GRÁFICAS */
     .charts {
       width: 100%;
       max-width: 1200px;
@@ -143,76 +108,132 @@
       gap: 24px;
       padding: 0 14px;
     }
-    @media (min-width: 900px) {
-      .charts { grid-template-columns: 1fr 1fr; }
-    }
+    @media (min-width: 900px) { .charts { grid-template-columns: 1fr 1fr; } }
 
     .chart-card {
       background: var(--card);
       border-radius: 12px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
       padding: 18px;
-      transform: scale(0.9);
       opacity: 0;
     }
     .chart-card.show { opacity: 1; animation: zoomIn 1s ease forwards; }
-
-    .chart-title {
-      text-align: left;
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: 8px;
-      font-size: 1.1rem;
-    }
-    canvas {
-      width: 100% !important;
-      height: 360px !important;
-    }
 
     footer {
       background: var(--accent);
       color: #fff;
       padding: 16px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .social {
-      display: flex;
-      gap: 20px;
-    }
-    .social a {
-      color: #fff;
-      font-size: 1.8rem;
-      transition: transform 0.2s ease, color 0.2s ease;
-    }
-    .social a:hover {
-      transform: scale(1.2);
-      color: #ffd700;
+      margin-top: 30px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- 🔹 ENCABEZADO -->
+  <!-- ENCABEZADO -->
   <header>
-    <img src="LOGO-ITEC-PARA-WEB_1.png" alt="Logo ParkGO" />
+    <img src="LOGO-ITEC-PARA-WEB_1.png">
     <h1>ParkGO</h1>
   </header>
 
   <!-- ✅ BOTÓN PARA IR A index2.html -->
   <button class="switch-btn" onclick="window.location.href='index2.html'">
-    Ir a Estacionamiento en Vivo →
+    ➜ Ver Estacionamiento en Vivo
   </button>
 
-  <p class="subtitle">Visualización en tiempo real </p>
+  <p class="subtitle">Visualización en tiempo real</p>
 
-  <!-- 🔹 (RESTO DE TU CÓDIGO NO MODIFICADO) -->
-  <!-- … (todo lo demás se mantiene igual) … -->
+  <!-- TABLAS -->
+  <section class="tables fade">
+    <div class="big-table"><table>
+      <thead><tr><th>Aperturas</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="aperturas">--</td><td id="fecha1">--</td></tr></tbody>
+    </table></div>
 
-  <!-- scripts originales quedan igual -->
+    <div class="big-table"><table>
+      <thead><tr><th>Cierres</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="cierres">--</td><td id="fecha2">--</td></tr></tbody>
+    </table></div>
+
+    <div class="big-table"><table>
+      <thead><tr><th>Tiempo (s)</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="tiempo">--</td><td id="fecha3">--</td></tr></tbody>
+    </table></div>
+
+    <div class="big-table"><table>
+      <thead><tr><th>Ganancia ($)</th><th>Última fecha</th></tr></thead>
+      <tbody><tr><td class="valor" id="ganancia">--</td><td id="fecha4">--</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <!-- GRÁFICAS -->
+  <section class="charts fade">
+    <div class="chart-card"><canvas id="chartA"></canvas></div>
+    <div class="chart-card"><canvas id="chartB"></canvas></div>
+    <div class="chart-card"><canvas id="chartC"></canvas></div>
+    <div class="chart-card"><canvas id="chartD"></canvas></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 ParkGO
+  </footer>
+
+  <script>
+    const channelID = 3111541;
+    const readAPIKey = "Y65MRQAJGMM1TSXG";
+    const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?results=30&api_key=${readAPIKey}`;
+
+    function chart(ctx, label, color) {
+      return new Chart(ctx, {
+        type: 'bar',
+        data: { labels: [], datasets: [{ label, data: [], backgroundColor: color }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    const chartA = chart(document.getElementById("chartA"), "Aperturas", "#0078d7");
+    const chartB = chart(document.getElementById("chartB"), "Cierres", "#d9534f");
+    const chartC = chart(document.getElementById("chartC"), "Tiempo", "#28a745");
+    const chartD = chart(document.getElementById("chartD"), "Ganancia", "#ff9f00");
+
+    async function update() {
+      const req = await fetch(url);
+      const json = await req.json();
+      const feeds = json.feeds;
+      if (!feeds) return;
+
+      const last = feeds[feeds.length - 1];
+      const fecha = new Date(last.created_at).toLocaleString();
+
+      document.getElementById("aperturas").textContent = last.field1 || 0;
+      document.getElementById("cierres").textContent = last.field2 || 0;
+      document.getElementById("tiempo").textContent    = last.field3 || 0;
+      document.getElementById("ganancia").textContent  = "$" + (last.field4 || 0);
+
+      document.getElementById("fecha1").textContent = fecha;
+      document.getElementById("fecha2").textContent = fecha;
+      document.getElementById("fecha3").textContent = fecha;
+      document.getElementById("fecha4").textContent = fecha;
+
+      const labels = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
+
+      chartA.data.labels = chartB.data.labels = chartC.data.labels = chartD.data.labels = labels;
+
+      chartA.data.datasets[0].data = feeds.map(f => f.field1);
+      chartB.data.datasets[0].data = feeds.map(f => f.field2);
+      chartC.data.datasets[0].data = feeds.map(f => f.field3);
+      chartD.data.datasets[0].data = feeds.map(f => f.field4);
+
+      chartA.update(); chartB.update(); chartC.update(); chartD.update();
+
+      document.querySelectorAll(".big-table, .chart-card").forEach(el => el.classList.add("show"));
+    }
+
+    update();
+    setInterval(update, 15000);
+  </script>
+
 </body>
 </html>
+
