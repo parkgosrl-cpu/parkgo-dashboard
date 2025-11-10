@@ -77,19 +77,17 @@
 <h1>🅿️ ParkGO - Estado del Estacionamiento</h1>
 
 <div id="parking">
-    <div class="spot" id="A1"><div class="label">A1</div></div>
-    <div class="spot" id="A2"><div class="label">A2</div></div>
-    <div class="spot" id="A3"><div class="label">A3</div></div>
     <div class="spot" id="A4"><div class="label">A4</div></div>
+    <div class="spot" id="A3"><div class="label">A3</div></div>
+    <div class="spot" id="A2"><div class="label">A2</div></div>
+    <div class="spot" id="A1"><div class="label">A1</div></div>
 </div>
 
 <button id="volver" onclick="location.href='index.html'">⬅ Volver al Panel Principal</button>
 
 <script>
 // ✅ PNG COMPLETO (Auto rojo visto desde arriba)
-const carPNG = 
-"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAABG0lEQVR4nO3RQQ0AMAgAsNS/6SxhAEvtTDTEEiGJg+vW7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u+wuBHQNR1YVAAAAAElFTkSuQmCC";
-
+<img src="auto.webp" alt="">
 // ✅ CONFIGURACIÓN THINGSPEAK REAL
 const channelID = 3154979; 
 const apiKey = "1Z70ZUDZX3OP789F";
@@ -130,4 +128,5 @@ actualizarEstacionamiento();
 
 </body>
 </html>
+
 
