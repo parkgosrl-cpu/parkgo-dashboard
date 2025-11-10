@@ -51,6 +51,25 @@
         left: 50%;
         transform: translateX(-50%);
     }
+
+    /* BOTÓN DE REGRESO */
+    #volver {
+        margin-top: 30px;
+        background: #00aaff;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    #volver:hover {
+        background: #0088cc;
+        transform: scale(1.05);
+    }
 </style>
 </head>
 <body>
@@ -58,36 +77,41 @@
 <h1>🅿️ ParkGO - Estado del Estacionamiento</h1>
 
 <div id="parking">
-    <div class="spot" id="A4"><div class="label">A4</div></div>
-    <div class="spot" id="A3"><div class="label">A3</div></div>
-    <div class="spot" id="A2"><div class="label">A2</div></div>
     <div class="spot" id="A1"><div class="label">A1</div></div>
+    <div class="spot" id="A2"><div class="label">A2</div></div>
+    <div class="spot" id="A3"><div class="label">A3</div></div>
+    <div class="spot" id="A4"><div class="label">A4</div></div>
 </div>
 
-<script>
-// AUTO ROJO generado en PNG (vista superior)
-const carPNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAABT4jK7AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAKb0lEQVR4nO3dW2xd5RnH8d9z+DAgwFJFDJYRAosLCgokFBL7KPaKqTqKZSZBmTipSgkJYGNSNkaSuyGRRigGgK2GhSMxYWQkQqF5e6v3vE9z53W1u1ruvjd77nuc+K2v+uOet3nP6/n7fc953vnPnM2g0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Gg0Go3kH6ZYbR8Dm5N0AAAAASUVORK5CYII=";
+<button id="volver" onclick="location.href='index.html'">⬅ Volver al Panel Principal</button>
 
-// CONFIGURACIÓN THINGSPEAK
+<script>
+// ✅ PNG COMPLETO (Auto rojo visto desde arriba)
+const carPNG = 
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAABG0lEQVR4nO3RQQ0AMAgAsNS/6SxhAEvtTDTEEiGJg+vW7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u+wuBHQNR1YVAAAAAElFTkSuQmCC";
+
+// ✅ CONFIGURACIÓN THINGSPEAK REAL
 const channelID = 3154979; 
-const apiKey = "1Z70ZUDZX3OP789F"; 
+const apiKey = "1Z70ZUDZX3OP789F";
 
 function actualizarEstacionamiento() {
+
     const url = `https://api.thingspeak.com/channels/${channelID}/feeds/last.json?api_key=${apiKey}`;
 
     fetch(url)
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
             const spots = ["field1", "field2", "field3", "field4"];
 
             spots.forEach((campo, index) => {
+
                 const divID = "A" + (index + 1);
                 const spot = document.getElementById(divID);
 
-                // Limpia autos previos
+                // Limpia el contenido anterior
                 spot.innerHTML = `<div class="label">A${index + 1}</div>`;
 
-                // Si el campo vale 1 → auto presente
+                // Si hay auto → poner imagen
                 if (data[campo] == "1") {
                     const img = document.createElement("img");
                     img.src = carPNG;
@@ -96,13 +120,11 @@ function actualizarEstacionamiento() {
                 }
             });
         })
-        .catch(error => console.log("Error:", error));
+        .catch(err => console.log("Error:", err));
 }
 
 // Actualizar cada 7 segundos
 setInterval(actualizarEstacionamiento, 7000);
-
-// Primer llamada
 actualizarEstacionamiento();
 </script>
 
