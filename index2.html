@@ -52,7 +52,6 @@
         transform: translateX(-50%);
     }
 
-    /* BOTÓN DE REGRESO */
     #volver {
         margin-top: 30px;
         background: #00aaff;
@@ -86,8 +85,9 @@
 <button id="volver" onclick="location.href='index.html'">⬅ Volver al Panel Principal</button>
 
 <script>
-// ✅ PNG COMPLETO (Auto rojo visto desde arriba)
-<img src="auto.webp" alt="">
+// ✅ USAR auto.webp COMO IMAGEN DEL AUTO
+const carPNG = "auto.webp";
+
 // ✅ CONFIGURACIÓN THINGSPEAK REAL
 const channelID = 3154979; 
 const apiKey = "1Z70ZUDZX3OP789F";
@@ -128,5 +128,7 @@ actualizarEstacionamiento();
 
 </body>
 </html>
+
+
 
 
